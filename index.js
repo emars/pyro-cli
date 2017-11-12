@@ -5,14 +5,10 @@ const pkg = require('./package.json')
 
 program.version(pkg.version)
 
-const client = {}
-client.cli = program
-client.getCommand = (err, status) => {}
-
-require('./commands')(client)
+require('./commands')(program)
 
 program.action(cmd => {
   console.error(chalk.bold.red(`Error: "${cmd}" is not a valid pyro command.`))
 })
 
-module.exports = client
+module.exports = program

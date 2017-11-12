@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-const client = require('..')
-client.cli.parse(process.argv)
+const cli = require('..')
+cli.parse(process.argv)
