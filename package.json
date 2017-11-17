@@ -16,6 +16,8 @@
     "chalk": "^2.3.0",
     "commander": "^2.11.0",
     "didyoumean": "^1.2.1",
+    "firebase-admin": "^5.5.0",
+    "firebase-tools": "^3.15.0",
     "fs-promise": "^2.0.3",
     "lodash": "^4.17.4"
   }

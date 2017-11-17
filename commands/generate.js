@@ -47,7 +47,13 @@ const invalidType = type =>
     console.log(chalk.red.bold(`Pyro Error: Invalid Generator ${type}`))
   )
 
-const generateComponent = async name => {
+/**
+ * 
+ * @param {*G} dir 
+ * @param {*} files 
+ * @param {*} name 
+ */
+const generate = async (dir, files, name) => {
   if (!await isPyroRoot()) {
     return console.log(
       chalk.red.bold(
@@ -55,25 +61,72 @@ const generateComponent = async name => {
       )
     )
   }
-  console.log(chalk.blue(`Generating Component ${name}...`))
-  const indexTemplate = await fs.readFile(
-    `${__dirname}/../lib/templates/component/index.js.template`,
-    'utf-8'
-  )
-  const componentTemplate = await fs.readFile(
-    `${__dirname}/../lib/templates/component/component.js.template`,
-    'utf-8'
-  )
+  console.log(chalk.blue(`Generating ${name}...`))
 
-  const index = indexTemplate.replace(/%NAME%/g, name)
-  const component = componentTemplate.replace(/%NAME%/g, name)
-
-  await fs.mkdir(`${getComponentDir(name)}`)
-  await fs.writeFile(`${getComponentDir(name)}/index.js`, index)
-  await fs.writeFile(`${getComponentDir(name)}/${name}.js`, component)
-
+  await fs.mkdir(dir)
+  files.forEach(async file => {
+    const contents = await fs.readFile(file.path, 'utf-8')
+    const tplName = file.name.replace(/%NAME%/g, name)
+    const tpl = contents.replace(/%NAME%/g, name)
+    await fs.writeFile(`${dir}/${tplName}`, tpl)
+  })
   console.log(chalk.blue(`Successfully Generated Component: ${name}.`))
 }
+
+const generateComponent = async name => {
+  const dir = `${getComponentDir(name)}`
+  const files = [
+    {
+      name: 'index.js',
+      path: `${__dirname}/../lib/templates/component/index.js.template`
+    },
+    {
+      name: '%NAME%.js',
+      path: `${__dirname}/../lib/templates/component/component.js.template`
+    }
+  ]
+  return generate(dir, files, name)
+}
+
+const generateContainer = async name => {
+  const dir = `${getComponentDir(name)}`
+  const files = [
+    {
+      name: 'index.js',
+      path: `${__dirname}/../lib/templates/container/index.js.template`
+    },
+    {
+      name: '%NAME%.js',
+      path: `${__dirname}/../lib/templates/container/component.js.template`
+    },
+    {
+      name: '%NAME%Container.js',
+      path: `${__dirname}/../lib/templates/container/container.js.template`
+    }
+  ]
+  return generate(dir, files, name)
+}
+
+const generatePage = async name => {
+  const dir = `${getPageDir(name)}`
+  const files = [
+    {
+      name: 'index.js',
+      path: `${__dirname}/../lib/templates/container/index.js.template`
+    },
+    {
+      name: '%NAME%.js',
+      path: `${__dirname}/../lib/templates/container/component.js.template`
+    },
+    {
+      name: '%NAME%Container.js',
+      path: `${__dirname}/../lib/templates/container/container.js.template`
+    }
+  ]
+  return generate(dir, files, name)
+}
+
+const generateRedux = () => {}
 
 const getPyroRoot = () => {
   return process.cwd()
@@ -89,9 +142,4 @@ const isPyroRoot = async () => {
 }
 
 const getComponentDir = name => `${getPyroRoot()}/src/app/components/${name}`
-
-const generatePage = () => {}
-
-const generateContainer = () => {}
-
-const generateRedux = () => {}
+const getPageDir = name => `${getPyroRoot()}/src/app/router/pages/${name}`

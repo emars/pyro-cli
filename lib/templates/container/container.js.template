@@ -1,0 +1,18 @@
+import { compose } from 'recompose'
+import { connect } from 'react-redux'
+
+import %NAME% from './%NAME%'
+
+const mapStateToProps = state => ({
+
+})
+
+const mapDispatchToProps = dispatch => ({
+
+})
+
+const %NAME%Container = compose(
+    connect(mapStateToProps, mapDispatchToProps)
+)(%NAME%)
+
+export default %NAME%Container
